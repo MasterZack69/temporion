@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
- <path fill="#dedede" fill-rule="evenodd" d="M2.5 3.5h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1z m0.5 1.5a0.5 0.5 0 0 0-0.5 0.5v5a0.5 0.5 0 0 0 0.5 0.5h10a0.5 0.5 0 0 0 0.5-0.5v-5a0.5 0.5 0 0 0-0.5-0.5z"/>
- <circle cx="11.5" cy="8" r="1.05" fill="#dedede"/>
- <g fill="#dedede">
-  <rect x="3.5" y="6.4" width="4.5" height="0.9" rx="0.45"/>
-  <rect x="3.5" y="8.2" width="3"   height="0.9" rx="0.45"/>
- </g>
-</svg>
