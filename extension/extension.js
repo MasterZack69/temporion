@@ -10,6 +10,7 @@ import GObject from 'gi://GObject';
 import St from 'gi://St';
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
+import Clutter from 'gi://Clutter';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
@@ -22,6 +23,8 @@ const DAEMON_PATH = '@TEMPORIOND@';
 // right after "the workspace thing".
 const PANEL_POSITION = 1;
 
+const ICON_SIZE = 14;
+
 // Colour thresholds in °C (generic across sensors; tweak to taste).
 const WARN_C = 75;
 const HOT_C = 90;
@@ -31,41 +34,50 @@ const WARN_STYLE = 'color: #f5c211;';
 const HOT_STYLE = 'color: #ed333b; font-weight: bold;';
 const IDLE_STYLE = 'opacity: 0.45;';
 
-function tagFor(index) {
+// Field index -> symbolic icon basename (index 2+ are disks).
+function iconNameFor(index) {
     if (index === 0)
-        return 'CPU';
+        return 'cpu-symbolic.svg';
     if (index === 1)
-        return 'GPU';
-    return `D${index - 2}`;
+        return 'gpu-symbolic.svg';
+    return 'disk-symbolic.svg';
 }
 
 const TemporionIndicator = GObject.registerClass(
 class TemporionIndicator extends PanelMenu.Button {
-    _init() {
+    _init(iconsDir) {
         super._init(0.0, 'Temporion', true /* dontCreateMenu */);
         this.reactive = false; // passive readout, no click menu
+        this._iconsDir = iconsDir;
 
-        this._box = new St.BoxLayout({style_class: 'temporion-box'});
+        this._box = new St.BoxLayout({
+            style_class: 'temporion-box',
+            y_align: Clutter.ActorAlign.CENTER,
+        });
         this.add_child(this._box);
 
         this._items = []; // { value: St.Label }
     }
 
-    // Rebuild the label set when the field count changes.
+    // Rebuild the icon/label set when the field count changes.
     _rebuild(count) {
         this._box.destroy_all_children();
         this._items = [];
         for (let i = 0; i < count; i++) {
-            const item = new St.BoxLayout({style_class: 'temporion-item'});
-            item.add_child(new St.Label({
-                style_class: 'temporion-tag',
-                text: tagFor(i),
-                y_align: 2, // CENTER
+            const item = new St.BoxLayout({
+                style_class: 'temporion-item',
+                y_align: Clutter.ActorAlign.CENTER,
+            });
+            item.add_child(new St.Icon({
+                style_class: 'system-status-icon temporion-icon',
+                gicon: Gio.icon_new_for_string(`${this._iconsDir}/${iconNameFor(i)}`),
+                icon_size: ICON_SIZE,
+                y_align: Clutter.ActorAlign.CENTER,
             }));
             const value = new St.Label({
                 style_class: 'temporion-value',
                 text: '–',
-                y_align: 2, // CENTER
+                y_align: Clutter.ActorAlign.CENTER,
             });
             item.add_child(value);
             this._box.add_child(item);
@@ -101,7 +113,7 @@ class TemporionIndicator extends PanelMenu.Button {
 
 export default class TemporionExtension extends Extension {
     enable() {
-        this._indicator = new TemporionIndicator();
+        this._indicator = new TemporionIndicator(`${this.path}/icons`);
         Main.panel.addToStatusArea('temporion', this._indicator, PANEL_POSITION, 'left');
 
         this._cancellable = new Gio.Cancellable();

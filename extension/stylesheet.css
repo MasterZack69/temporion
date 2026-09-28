@@ -1,20 +1,19 @@
 .temporion-box {
-    spacing: 9px;
+    spacing: 10px;
     padding: 0 6px;
 }
 
 .temporion-item {
-    spacing: 3px;
+    spacing: 4px;
 }
 
-.temporion-tag {
-    font-size: 8pt;
-    font-weight: bold;
-    opacity: 0.55;
+.temporion-icon {
+    /* Recoloured to the panel foreground by gnome-shell (symbolic icon). */
+    opacity: 0.9;
 }
 
 .temporion-value {
     /* Fixed width so changing digits don't shift the panel around. */
-    min-width: 2.4em;
-    text-align: right;
+    min-width: 2.2em;
+    text-align: left;
 }
