@@ -1,0 +1,8 @@
+{
+  "uuid": "temporion@masterzack69",
+  "name": "Temporion",
+  "description": "CPU (Tctl), NVIDIA GPU and NVMe temperatures in the top bar. All sensor work happens in a zero-dependency Rust daemon streamed over a pipe, so gnome-shell never blocks — no freon-style stutter.",
+  "shell-version": ["50"],
+  "url": "https://github.com/MasterZack69/temporion",
+  "version": 1
+}

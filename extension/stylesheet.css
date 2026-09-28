@@ -1,0 +1,20 @@
+.temporion-box {
+    spacing: 9px;
+    padding: 0 6px;
+}
+
+.temporion-item {
+    spacing: 3px;
+}
+
+.temporion-tag {
+    font-size: 8pt;
+    font-weight: bold;
+    opacity: 0.55;
+}
+
+.temporion-value {
+    /* Fixed width so changing digits don't shift the panel around. */
+    min-width: 2.4em;
+    text-align: right;
+}

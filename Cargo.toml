@@ -1,0 +1,21 @@
+[package]
+name = "temporion"
+version = "0.1.0"
+edition = "2021"
+description = "Zero-dependency Rust daemon that streams CPU (Tctl), NVIDIA GPU, and NVMe temperatures for the Temporion GNOME extension."
+license = "AGPL-3.0-only"
+repository = "https://github.com/MasterZack69/temporion"
+
+# All logic lives here; the GNOME extension is a thin GJS reader.
+# No external crates on purpose: std-only + a tiny hand-written NVML FFI.
+
+[[bin]]
+name = "temporiond"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = "s"      # optimize for size; the work is trivial anyway
+lto = true
+codegen-units = 1
+panic = "abort"      # no unwinding needed for a leaf daemon
+strip = true
