@@ -18,6 +18,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::ptr;
 
+use super::hwmon;
+
 extern "C" {
     fn dlopen(filename: *const c_char, flag: c_int) -> *mut c_void;
     fn dlsym(handle: *mut c_void, symbol: *const c_char) -> *mut c_void;
@@ -90,7 +92,8 @@ impl Gpu {
         // Don't wake a suspended dGPU unless explicitly told to.
         if !self.always {
             if let Some(path) = &self.runtime_status {
-                if fs::read_to_string(path).unwrap_or_default().trim() == "suspended" {
+                let mut buffer = [0; hwmon::SYSFS_BUFFER_SIZE];
+                if hwmon::read_sysfs(path, &mut buffer).unwrap_or_default() == "suspended" {
                     return None;
                 }
             }
@@ -143,19 +146,15 @@ unsafe fn symbol(lib: *mut c_void, name: &str) -> Option<*mut c_void> {
 /// Find the NVIDIA display controller's `power/runtime_status` sysfs node.
 fn nvidia_runtime_status_path() -> Option<PathBuf> {
     let base = Path::new("/sys/bus/pci/devices");
+    let mut buffer = [0; hwmon::SYSFS_BUFFER_SIZE];
     for entry in fs::read_dir(base).ok()?.flatten() {
         let dir = entry.path();
-        if fs::read_to_string(dir.join("vendor"))
-            .unwrap_or_default()
-            .trim()
-            != "0x10de"
-        {
+        if hwmon::read_sysfs(&dir.join("vendor"), &mut buffer).unwrap_or_default() != "0x10de" {
             continue; // not NVIDIA
         }
         // 0x03xxxx == display controller (VGA / 3D controller)
-        if !fs::read_to_string(dir.join("class"))
+        if !hwmon::read_sysfs(&dir.join("class"), &mut buffer)
             .unwrap_or_default()
-            .trim()
             .starts_with("0x03")
         {
             continue;
