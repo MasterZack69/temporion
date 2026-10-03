@@ -71,6 +71,6 @@ fn read_model(index: u32) -> Option<String> {
         return None;
     }
     let path = format!("/sys/class/nvme/nvme{index}/model");
-    let raw = fs::read_to_string(path).ok()?;
-    Some(raw.trim().to_owned())
+    let mut buffer = [0; hwmon::SYSFS_BUFFER_SIZE];
+    Some(hwmon::read_sysfs(Path::new(&path), &mut buffer)?.to_owned())
 }
