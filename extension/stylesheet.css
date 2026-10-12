@@ -17,6 +17,6 @@
 .temporion-value {
     /* Fixed width so changing digits don't shift the panel around.
      * Left-align so unused width falls after the value, not after the tag. */
-    min-width: 2.4em;
+    min-width: 2em;
     text-align: left;
 }
