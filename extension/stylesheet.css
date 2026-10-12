@@ -1,5 +1,6 @@
 .temporion-box {
-    spacing: 9px;
+    /* Separate sensor groups more than each tag/value pair. */
+    spacing: 12px;
     padding: 0 6px;
 }
 
@@ -14,7 +15,8 @@
 }
 
 .temporion-value {
-    /* Fixed width so changing digits don't shift the panel around. */
+    /* Fixed width so changing digits don't shift the panel around.
+     * Left-align so unused width falls after the value, not after the tag. */
     min-width: 2.4em;
-    text-align: right;
+    text-align: left;
 }
